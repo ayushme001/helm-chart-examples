@@ -1,0 +1,35 @@
+name: Helm Test
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install Helm
+        run: |
+          curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+
+      - name: Check Helm chart syntax
+        run: |
+          helm lint path/to/your/chart
+
+      - name: Install and test Helm chart
+        run: |
+          helm install my-release path/to/your/chart
+          # Add additional steps or commands to test the deployment
+          # You can use tools like `kubectl` to interact with the deployed resources
+
+      - name: Check Helm chart installation
+        run: |
+          # Capture the installation output
+          INSTALL_OUTPUT=$(helm install my-release path/to/your/chart)
+          echo "$INSTALL_OUTPUT"
+          # Add your checks and assertions based on the output
