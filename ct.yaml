@@ -1,5 +1,5 @@
 target-branch: main
 chart-dirs:
-  - ./chart/cp-ksql-server
+  - .helm-charts/charts/cp-ksql-server
 helm-extra-args: --timeout 600s
 check-version-increment: false
