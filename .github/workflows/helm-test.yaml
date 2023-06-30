@@ -6,30 +6,43 @@ on:
       - master
 
 jobs:
-  test:
+  lint-test:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
-      - name: Install Helm
-        run: |
-          curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+      - name: Set up Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: v3.11.2
 
-      - name: Check Helm chart syntax
-        run: |
-          helm lint ./charts/cp-ksql-server
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          check-latest: true
 
-      - name: Install and test Helm chart
-        run: |
-          helm install my-release ./charts/cp-ksql-server
-          # Add additional steps or commands to test the deployment
-          # You can use tools like `kubectl` to interact with the deployed resources
+      - name: Set up chart-testing
+        uses: helm/chart-testing-action@v2.4.0
 
-      - name: Check Helm chart installation
+      - name: Run chart-testing (list-changed)
+        id: list-changed
         run: |
-          # Capture the installation output
-          INSTALL_OUTPUT=$(helm install my-release ./charts/cp-ksql-server)
-          echo "$INSTALL_OUTPUT"
-          # Add your checks and assertions based on the output
+          changed=$(ct list-changed --target-branch ${{ github.event.repository.default_branch }})
+          if [[ -n "$changed" ]]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Run chart-testing (lint)
+        if: steps.list-changed.outputs.changed == 'true'
+        run: ct lint --target-branch ${{ github.event.repository.default_branch }}
+
+      - name: Create kind cluster
+        if: steps.list-changed.outputs.changed == 'true'
+        uses: helm/kind-action@v1.4.0
+
+      - name: Run chart-testing (install)
+        if: steps.list-changed.outputs.changed == 'true'
+        run: ct install --target-branch ${{ github.event.repository.default_branch }}
