@@ -22,7 +22,7 @@ spec:
   {{- range $cidr := .Values.external.loadBalancerSourceRanges }}
     - {{ $cidr }}
   {{- end }}
-  {{- end }}
+  {{- end }
   ports:
     - name: server-proxy
       port: {{ .Values.external.port }}

@@ -13,3 +13,4 @@ data:
   {{ . }}: |-
 {{ $files.Get . | indent 4 }}
   {{- end }}
+w
