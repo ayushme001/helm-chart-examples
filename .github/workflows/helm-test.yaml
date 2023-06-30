@@ -19,17 +19,17 @@ jobs:
 
       - name: Check Helm chart syntax
         run: |
-          helm lint ./chart
+          helm lint ./charts/cp-ksql-server
 
       - name: Install and test Helm chart
         run: |
-          helm install my-release ./chart
+          helm install my-release ./charts/cp-ksql-server
           # Add additional steps or commands to test the deployment
           # You can use tools like `kubectl` to interact with the deployed resources
 
       - name: Check Helm chart installation
         run: |
           # Capture the installation output
-          INSTALL_OUTPUT=$(helm install my-release ./chart)
+          INSTALL_OUTPUT=$(helm install my-release ./charts/cp-ksql-server)
           echo "$INSTALL_OUTPUT"
           # Add your checks and assertions based on the output
