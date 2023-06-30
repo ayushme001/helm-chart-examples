@@ -19,17 +19,17 @@ jobs:
 
       - name: Check Helm chart syntax
         run: |
-          helm lint path/to/your/chart
+          helm lint ./chart
 
       - name: Install and test Helm chart
         run: |
-          helm install my-release path/to/your/chart
+          helm install my-release ./chart
           # Add additional steps or commands to test the deployment
           # You can use tools like `kubectl` to interact with the deployed resources
 
       - name: Check Helm chart installation
         run: |
           # Capture the installation output
-          INSTALL_OUTPUT=$(helm install my-release path/to/your/chart)
+          INSTALL_OUTPUT=$(helm install my-release ./chart)
           echo "$INSTALL_OUTPUT"
           # Add your checks and assertions based on the output
