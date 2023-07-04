@@ -1,5 +1,5 @@
 target-branch: main
 chart-dirs:
-  - charts
+  - apps-c
 helm-extra-args: --timeout 600s
 # check-version-increment: false
